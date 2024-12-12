@@ -5,28 +5,6 @@ using namespace std;
 static string inputMissing = "Usage: lookup-cli <name> <output_field>";
 static string nameNotFound = "Name not found";
 static string fieldNotFound = "Field not found";
-class strProcessor{
-    private:
-        vector<string> inputTokens;
-    public:
-        strProcessor(string wholeline, const char delim){ // split userInput
-            istringstream iss(wholeline);
-            string buff;
-            while (getline(iss, buff, delim)){
-                inputTokens.push_back(buff);
-            }
-        }
-        bool sizeValid(){ // if input size is valid
-            if (inputTokens.size()==2) return true;
-            return false;
-        }
-        string getName(){ // return inputName
-            return inputTokens[0];
-        }
-        string getField(){ // return inputField
-            return inputTokens[1];
-        }
-};
 class YamlUtil{
     private:
         unordered_map<string,unordered_map<string,string>> pplInfo; // {"Alice":{"age":"18","occupation":"student"},"Bob":{...}}
@@ -70,26 +48,22 @@ class YamlUtil{
             return personInfo(name,field);
         }
 };
-int main(){
+int main(int argc, char* argv[]){
     YamlUtil* obj = new YamlUtil("./test.yaml"); // process yaml file and build people information into hashMap
-    string wholeline;
-    while (true){
-        getline(cin,wholeline); // get user input
-        strProcessor* strProcess = new strProcessor(wholeline, ' '); // process user input
-        if (!strProcess->sizeValid()) cout << inputMissing << endl; // check if input missing
-        else {
-            string name = strProcess->getName();
-            string field = strProcess->getField();
-            if (!obj->validName(name)) { // check if name is valid
-                cout << nameNotFound << endl; 
-                continue;
-            }
-            if (!obj->validField(name,field)) { // check if field is valid
-                cout << fieldNotFound << endl; 
-                continue;
-            }
-            cout << obj->getPersonInfo(name, field) << endl; // get personal info
-        }
+    if (argc!=3) {
+        cout << inputMissing << endl; // check if input missing
+        return 1;
     }
+    string name = argv[1];
+    string field = argv[2];
+    if (!obj->validName(name)) { // check if name is valid
+        cout << nameNotFound << endl; 
+        return 1;
+    }
+    if (!obj->validField(name,field)) { // check if field is valid
+        cout << fieldNotFound << endl; 
+        return 1;
+    }
+    cout << obj->getPersonInfo(name, field) << endl; // get personal info
     return 0;
 }
