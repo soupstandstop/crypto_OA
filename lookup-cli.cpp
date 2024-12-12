@@ -80,15 +80,15 @@ int main(){
         else {
             string name = strProcess->getName();
             string field = strProcess->getField();
-            if (!obj->validName(name)) {
-                cout << nameNotFound << endl;
+            if (!obj->validName(name)) { // check if name is valid
+                cout << nameNotFound << endl; 
                 continue;
             }
-            if (!obj->validField(name,field)) {
-                cout << fieldNotFound << endl;
+            if (!obj->validField(name,field)) { // check if field is valid
+                cout << fieldNotFound << endl; 
                 continue;
             }
-            cout << obj->getPersonInfo(name, field) << endl; // 
+            cout << obj->getPersonInfo(name, field) << endl; // get personal info
         }
     }
     return 0;
