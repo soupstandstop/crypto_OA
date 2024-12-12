@@ -6,7 +6,7 @@
 using namespace std;
 
 int main(int argc, char* argv[]){
-    YamlUtil* obj = new YamlUtil("./test.yaml"); // process yaml file and build people information into hashMap
+    YamlUtil* obj = new YamlUtil(yamlPath); // process yaml file and build people information into hashMap
     if (argc!=3) {
         cout << inputMissing << endl; // check if input missing
         return 1;
