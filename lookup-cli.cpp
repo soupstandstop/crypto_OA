@@ -9,21 +9,21 @@ class strProcessor{
     private:
         vector<string> inputTokens;
     public:
-        strProcessor(string wholeline, const char delim){
+        strProcessor(string wholeline, const char delim){ // split userInput
             istringstream iss(wholeline);
             string buff;
             while (getline(iss, buff, delim)){
                 inputTokens.push_back(buff);
             }
         }
-        bool sizeValid(){
+        bool sizeValid(){ // if input size is valid
             if (inputTokens.size()==2) return true;
             return false;
         }
-        string getName(){
+        string getName(){ // return inputName
             return inputTokens[0];
         }
-        string getField(){
+        string getField(){ // return inputField
             return inputTokens[1];
         }
 };
@@ -38,14 +38,6 @@ class YamlUtil{
         void convertToSubMap(YAML::const_iterator it){
             subMap.clear();
             subMap = it->as<unordered_map<string,string>>();
-        }
-        bool validName(string name){
-            if (pplInfo.find(name)==pplInfo.end()) return false; // name not found
-            return true; // name exists
-        }
-        bool validField(string name, string field){
-            if (pplInfo[name].find(field)==pplInfo[name].end()) return false; // field not found in pplInfo[name]
-            return true; // field exists in pplInfo[name]
         }
         string personInfo(string name, string field){
             return pplInfo[name][field];
@@ -66,27 +58,37 @@ class YamlUtil{
                 }
             }
         }
+        bool validName(string name){
+            if (pplInfo.find(name)==pplInfo.end()) return false; // name not found
+            return true; // name exists
+        }
+        bool validField(string name, string field){
+            if (pplInfo[name].find(field)==pplInfo[name].end()) return false; // field not found in pplInfo[name]
+            return true; // field exists in pplInfo[name]
+        }
         string getPersonInfo(string name, string field){
-            if (!validName(name)) {
-                return nameNotFound;
-            }
-            if (!validField(name,field)) {
-                return fieldNotFound;
-            }
             return personInfo(name,field);
         }
 };
 int main(){
-    YamlUtil* obj = new YamlUtil("./test.yaml");
+    YamlUtil* obj = new YamlUtil("./test.yaml"); // process yaml file and build people information into hashMap
     string wholeline;
     while (true){
-        getline(cin,wholeline);
-        strProcessor* strProcess = new strProcessor(wholeline, ' ');
-        if (!strProcess->sizeValid()) cout << inputMissing << endl;
+        getline(cin,wholeline); // get user input
+        strProcessor* strProcess = new strProcessor(wholeline, ' '); // process user input
+        if (!strProcess->sizeValid()) cout << inputMissing << endl; // check if input missing
         else {
             string name = strProcess->getName();
             string field = strProcess->getField();
-            cout << obj->getPersonInfo(name, field) << endl;
+            if (!obj->validName(name)) {
+                cout << nameNotFound << endl;
+                continue;
+            }
+            if (!obj->validField(name,field)) {
+                cout << fieldNotFound << endl;
+                continue;
+            }
+            cout << obj->getPersonInfo(name, field) << endl; // 
         }
     }
     return 0;
