@@ -2,21 +2,29 @@
 #include <iostream>
 #include <string>
 using namespace std;
+static string inputMissing = "Usage: lookup-cli <name> <output_field>";
+static string nameNotFound = "Name not found";
+static string fieldNotFound = "Field not found";
 class strProcessor{
     private:
-        vector<string> result;
+        vector<string> inputTokens;
     public:
         strProcessor(string wholeline, const char delim){
             istringstream iss(wholeline);
             string buff;
-            cout << wholeline << endl;
             while (getline(iss, buff, delim)){
-                result.push_back(buff);
+                inputTokens.push_back(buff);
             }
         }
         bool sizeValid(){
-            if (result.size()==2) return true;
+            if (inputTokens.size()==2) return true;
             return false;
+        }
+        string getName(){
+            return inputTokens[0];
+        }
+        string getField(){
+            return inputTokens[1];
         }
 };
 class YamlUtil{
@@ -24,17 +32,28 @@ class YamlUtil{
         unordered_map<string,unordered_map<string,string>> pplInfo; // {"Alice":{"age":"18","occupation":"student"},"Bob":{...}}
         YAML::Node node;
         unordered_map<string,string> subMap;
-    public:
-        YamlUtil(const string& path){
-            node = YAML::LoadFile(path);
-            buildPplInfo();
-        }
         bool ifSequence(){
             return node.IsSequence();
         }
         void convertToSubMap(YAML::const_iterator it){
             subMap.clear();
             subMap = it->as<unordered_map<string,string>>();
+        }
+        bool validName(string name){
+            if (pplInfo.find(name)==pplInfo.end()) return false; // name not found
+            return true; // name exists
+        }
+        bool validField(string name, string field){
+            if (pplInfo[name].find(field)==pplInfo[name].end()) return false; // field not found in pplInfo[name]
+            return true; // field exists in pplInfo[name]
+        }
+        string personInfo(string name, string field){
+            return pplInfo[name][field];
+        }
+    public:
+        YamlUtil(const string& path){
+            node = YAML::LoadFile(path);
+            buildPplInfo();
         }
         void buildPplInfo(){
             if (ifSequence()){
@@ -47,20 +66,27 @@ class YamlUtil{
                 }
             }
         }
-        void lookup(string name, string field){
-            cout << pplInfo[name][field] << endl;
+        string getPersonInfo(string name, string field){
+            if (!validName(name)) {
+                return nameNotFound;
+            }
+            if (!validField(name,field)) {
+                return fieldNotFound;
+            }
+            return personInfo(name,field);
         }
 };
 int main(){
     YamlUtil* obj = new YamlUtil("./test.yaml");
     string wholeline;
     while (true){
-        cout << "Please Input name & field" << endl;
         getline(cin,wholeline);
         strProcessor* strProcess = new strProcessor(wholeline, ' ');
-        if (!strProcess->sizeValid()) cout << "Usage: lookup-cli <name> <output_field>" << endl;
+        if (!strProcess->sizeValid()) cout << inputMissing << endl;
         else {
-            cout << "normal" << endl;
+            string name = strProcess->getName();
+            string field = strProcess->getField();
+            cout << obj->getPersonInfo(name, field) << endl;
         }
     }
     return 0;
