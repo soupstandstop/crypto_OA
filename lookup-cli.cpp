@@ -2,10 +2,9 @@
 #include <iostream>
 #include <string>
 #include "util.h"
+#include "config.h"
 using namespace std;
-static string inputMissing = "Usage: lookup-cli <name> <output_field>";
-static string nameNotFound = "Name not found";
-static string fieldNotFound = "Field not found";
+
 int main(int argc, char* argv[]){
     YamlUtil* obj = new YamlUtil("./test.yaml"); // process yaml file and build people information into hashMap
     if (argc!=3) {
