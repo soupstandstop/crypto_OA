@@ -19,3 +19,5 @@ Name not found
 $ lookup-cli
 Usage: lookup-cli <name> <output_field>
 ```
+## Screenshot in container
+![screenshot](./data/screenshot.png)
