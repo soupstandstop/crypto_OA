@@ -2,6 +2,23 @@
 #include <iostream>
 #include <string>
 using namespace std;
+class strProcessor{
+    private:
+        vector<string> result;
+    public:
+        strProcessor(string wholeline, const char delim){
+            istringstream iss(wholeline);
+            string buff;
+            cout << wholeline << endl;
+            while (getline(iss, buff, delim)){
+                result.push_back(buff);
+            }
+        }
+        bool sizeValid(){
+            if (result.size()==2) return true;
+            return false;
+        }
+};
 class YamlUtil{
     private:
         unordered_map<string,unordered_map<string,string>> pplInfo; // {"Alice":{"age":"18","occupation":"student"},"Bob":{...}}
@@ -35,7 +52,16 @@ class YamlUtil{
         }
 };
 int main(){
-    YamlUtil yamlUtil("./test.yaml");
-    yamlUtil.lookup("Alice","age");
+    YamlUtil* obj = new YamlUtil("./test.yaml");
+    string wholeline;
+    while (true){
+        cout << "Please Input name & field" << endl;
+        getline(cin,wholeline);
+        strProcessor* strProcess = new strProcessor(wholeline, ' ');
+        if (!strProcess->sizeValid()) cout << "Usage: lookup-cli <name> <output_field>" << endl;
+        else {
+            cout << "normal" << endl;
+        }
+    }
     return 0;
 }
