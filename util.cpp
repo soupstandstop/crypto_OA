@@ -15,9 +15,6 @@ void YamlUtil::convertToSubMap(YAML::const_iterator it){
     subMap.clear();
     subMap = it->as<unordered_map<string,string>>();
 }
-string YamlUtil::personInfo(string name, string field){
-    return pplInfo[name][field];
-}
 void YamlUtil::buildPplInfo(){
     if (ifSequence()){
         for (YAML::const_iterator it=node.begin(); it!=node.end(); ++it){
@@ -38,5 +35,5 @@ bool YamlUtil::validField(string name, string field){
     return true; // field exists in pplInfo[name]
 }
 string YamlUtil::getPersonInfo(string name, string field){
-    return personInfo(name,field);
+    return pplInfo[name][field];
 }

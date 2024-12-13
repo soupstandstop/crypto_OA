@@ -1,3 +1,7 @@
+## Pull to local environment
+```sh
+git clone https://github.com/soupstandstop/crypto_OA.git
+```
 ## Build Dockerfile
 ```
 docker build -t crypto_oa .
